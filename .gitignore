@@ -2,3 +2,5 @@
 .DS_Store
 .idea/*
 .ipynb_checkpoints/*
+__pycache__/submission.cpython-36.pyc
+__pycache__/test.cpython-36.pyc
