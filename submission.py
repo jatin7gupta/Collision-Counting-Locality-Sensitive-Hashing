@@ -25,7 +25,6 @@ def c2lsh(data_hashes, query_hashes, alpha_m, beta_n):
     rdd = None
     while not found:
         rdd = data_hashes.map(lambda hash: p(hash, query_hashes, offset, alpha_m)).filter(lambda x: x is not None)
-        # print(f'og_rdd {rdd.collect()}')
 
         res = rdd.collect()
         s = set(res)
