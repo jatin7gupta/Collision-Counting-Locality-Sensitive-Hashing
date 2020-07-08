@@ -12,11 +12,12 @@ def count_collisions(hash, query, offset):
     return counter
 
 
-def c2lsh(data_hashes, query_hashes, alpha_m, beta_n):
+def p(hash, query, offset, alpha):
+    if count_collisions(hash[1], query, offset) >= alpha:
+         return hash[0]
 
-    def p(hash, query, offset, alpha):
-        if count_collisions(hash[1], query, offset) >= alpha:
-             return hash[0]
+
+def c2lsh(data_hashes, query_hashes, alpha_m, beta_n):
 
     offset = 0
     found = False
