@@ -8,7 +8,7 @@ def c(hash, query, offset, alpha):
     counter = 0
     i = 0
     while i < len(query) and counter < alpha:
-        if abs(hash[1][i] - query[i]) <= offset:
+        if abs(hash[i] - query[i]) <= offset:
             counter += 1
         i = i+1
     if counter >= alpha:
@@ -23,7 +23,7 @@ def c2lsh(data_hashes, query_hashes, alpha_m, beta_n):
     found = False
     rdd = None
     while not found:
-        rdd = data_hashes.filter(lambda h: c(h, query_hashes, offset, alpha_m))
+        rdd = data_hashes.filter(lambda h: c(h[1], query_hashes, offset, alpha_m))
         if rdd.count() >= beta_n:
             found = True
         else:
