@@ -4,7 +4,7 @@
 # do not change the heading of the function
 
 
-def c(hash, query, offset, alpha):
+def count_collision(hash, query, offset, alpha):
     counter = 0
     i = 0
     while i < len(query) and counter < alpha:
@@ -17,30 +17,47 @@ def c(hash, query, offset, alpha):
         return False
 
 
-def c2lsh(data_hashes, query_hashes, alpha_m, beta_n):
-
+def first_pass(data_hashes, query_hashes, alpha_m, beta_n):
     offset = 0
     found = False
     rdd = None
+    rdd_count = -1
     while not found:
-        rdd = data_hashes.filter(lambda h: c(h[1], query_hashes, offset, alpha_m))
-        if rdd.count() >= beta_n:
+        rdd = data_hashes.filter(lambda h: count_collision(h[1], query_hashes, offset, alpha_m))
+        rdd_count = rdd.count()
+        if rdd_count >= beta_n:
             found = True
         else:
-            offset += 1
-    return rdd.map(lambda h: h[0])
+            if offset == 0:
+                offset = offset+1
+            else:
+                offset = 2*offset
+    return offset, rdd_count, rdd
 
 
-# rdd = data_hashes.map(lambda hash: p(hash, query_hashes, offset, alpha_m)).filter(lambda x: x is not None)
+def binary_search(data_hashes, query_hashes, alpha_m, beta_n, offset):
+    high = offset
+    low = offset//2
+    rdd = None
+    while low <= high:
+        mid = low + (high - low) // 2
+        rdd = data_hashes.filter(lambda h: count_collision(h[1], query_hashes, mid, alpha_m))
+        rdd_count = rdd.count()
+        if rdd_count == beta_n:
+            return rdd
+        elif rdd_count > beta_n:
+            high = mid-1
+        else:
+            low = mid+1
+    return rdd
 
-def count_collisions(hash, query, offset):
-    counter = 0
-    for i in range(len(query)):
-        if abs(hash[i] - query[i]) <= offset:
-            counter += 1
-    return counter
 
-
-def p(hash, query, offset, alpha):
-    if count_collisions(hash[1], query, offset) >= alpha:
-        return hash[0]
+def c2lsh(data_hashes, query_hashes, alpha_m, beta_n):
+    offset, rdd_count, rdd = first_pass(data_hashes, query_hashes, alpha_m, beta_n)
+    if offset == 0 and rdd_count >= beta_n:
+        return rdd.map(lambda h: h[0])
+    elif rdd_count == beta_n:
+        return rdd.map(lambda h: h[0])
+    else:
+        rdd = binary_search(data_hashes, query_hashes, alpha_m, beta_n, offset)
+        return rdd.map(lambda h: h[0])
