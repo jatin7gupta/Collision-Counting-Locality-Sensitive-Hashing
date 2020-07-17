@@ -39,6 +39,7 @@ def binary_search(data_hashes, query_hashes, alpha_m, beta_n, offset):
     high = offset
     low = offset//2
     rdd = None
+    rdd_count = -1
     while low <= high:
         mid = low + (high - low) // 2
         rdd = data_hashes.filter(lambda h: count_collision(h[1], query_hashes, mid, alpha_m))
@@ -49,7 +50,10 @@ def binary_search(data_hashes, query_hashes, alpha_m, beta_n, offset):
             high = mid-1
         else:
             low = mid+1
-    return rdd
+    if rdd_count >= beta_n:
+        return rdd
+    else:
+        return data_hashes.filter(lambda h: count_collision(h[1], query_hashes, low, alpha_m))
 
 
 def c2lsh(data_hashes, query_hashes, alpha_m, beta_n):
