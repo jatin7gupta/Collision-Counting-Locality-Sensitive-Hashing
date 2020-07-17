@@ -19,18 +19,18 @@ with open("toy/toy_hashed_query", "rb") as file:
 import random
 
 
-def generate(dimension, count, seed, start=-1000, end=1000):
+def generate_test_case(dim, count, seed, start=-1000, end=1000):
     random.seed(seed)
 
     data = [
         [
             random.randint(start, end)
-            for _ in range(dimension)
+            for _ in range(dim)
         ]
         for i in range(count)
     ]
 
-    query = [random.randint(start, end) for _ in range(dimension)]
+    query = [random.randint(start, end) for _ in range(dim)]
 
     return data, query
 
@@ -58,8 +58,8 @@ def generate3(dimension, count, seed, start=0, end=100):
 
     return data, query
 
-# alpha_m, beta_n = 10, 10
-# data, query = generate(10, 20000, 0, 0, 1000)
+alpha_m, beta_n = 10, 10
+data, query = generate_test_case(20, 20000, 7, -10000, 10000)
 
 # alpha_m, beta_n = 10, 50
 # data, query = generate( 13, 200, 100, -50000, 50000)
@@ -67,8 +67,8 @@ def generate3(dimension, count, seed, start=0, end=100):
 # alpha_m, beta_n = 10, 64
 # data, query = generate2( 13, 9, 100, 0, 120)
 
-alpha_m, beta_n = 13, 25
-data, query = generate3( 13, 7, 100, 0, 120)
+# alpha_m, beta_n = 13, 25
+# data, query = generate3( 13, 7, 100, 0, 120)
 
 # alpha_m  = 10
 # beta_n = 10
